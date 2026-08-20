@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autonomous Research Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-slate-950">
+
+    <header class="border-b border-slate-800 bg-slate-900/50 backdrop-blur-md sticky top-0 z-50 px-8 py-4 flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <div class="h-3 w-3 rounded-full bg-indigo-500 animate-ping"></div>
+            <span class="text-xl font-bold tracking-tight text-indigo-400">Autonomous Research Agent Hub</span>
+        </div>
+        <span class="text-xs text-slate-400 font-mono bg-slate-800 px-3 py-1 rounded-full border border-slate-700">Flagship Module 02</span>
+    </header>
+
+    <nav class="bg-slate-900 border-b border-slate-800 px-8 py-3 flex space-x-6 text-sm font-medium">
+        <button onclick="switchTab('research')" id="nav-research" class="text-indigo-400 border-b-2 border-indigo-400 pb-1 transition">Agent Pipeline</button>
+        <button onclick="switchTab('sources')" id="nav-sources" class="text-slate-400 hover:text-slate-200 pb-1 transition">Knowledge Vault</button>
+        <button onclick="switchTab('config')" id="nav-config" class="text-slate-400 hover:text-slate-200 pb-1 transition">Node Config</button>
+    </nav>
+
+    <div id="page-research" class="page-content">
+        <main class="max-w-4xl mx-auto w-full p-8 my-auto">
+            <div class="bg-slate-900/80 border border-slate-800 p-8 rounded-2xl shadow-2xl backdrop-blur-xl">
+                <h1 class="text-3xl font-extrabold mb-2 text-white">Multi-Agent Research Pipeline</h1>
+                <p class="text-slate-400 mb-8">Enter your target research topic. Autonomous agents will scour knowledge nodes and synthesize executive reports in real time.</p>
+                
+                <div class="space-y-6">
+                    <div>
+                        <label for="topicInput" class="block text-sm font-medium text-slate-300 mb-2">Research Topic or Query</label>
+                        <input type="text" id="topicInput" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-4 text-sm text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition shadow-inner placeholder-slate-600" placeholder="e.g., Quantum Computing Breakthroughs 2026">
+                    </div>
+
+                    <div>
+                        <label for="depthSlider" class="block text-sm font-medium text-slate-300 mb-2">Research Depth / Layers: <span id="depthVal" class="text-indigo-400 font-bold">3</span></label>
+                        <input type="range" id="depthSlider" min="1" max="5" value="3" oninput="document.getElementById('depthVal').innerText = this.value" class="w-full accent-indigo-500 bg-slate-950 cursor-pointer">
+                    </div>
+                    
+                    <button id="researchBtn" onclick="startResearch()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-6 rounded-xl transition shadow-lg shadow-indigo-600/20 active:scale-[0.99] flex justify-center items-center space-x-2">
+                        <span>Dispatch Autonomous Agents</span>
+                    </button>
+                </div>
+
+                <div id="resultBox" class="mt-8 pt-6 border-t border-slate-800 hidden">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-indigo-400">Synthesized Executive Report</h3>
+                        <span id="resStatus" class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1 rounded-full text-xs font-mono">Completed</span>
+                    </div>
+                    
+                    <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 mb-6 shadow-inner">
+                        <p id="resSummary" class="text-sm text-slate-300 leading-relaxed">--</p>
+                    </div>
+
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <span class="text-xs text-slate-400 block uppercase tracking-wider font-semibold mb-2">Verified Source References</span>
+                        <ul id="resSources" class="space-y-1 text-sm"></ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="page-sources" class="page-content hidden max-w-4xl mx-auto w-full p-8 my-auto">
+        <div class="bg-slate-900/80 border border-slate-800 p-8 rounded-2xl shadow-2xl">
+            <h2 class="text-2xl font-bold text-indigo-400 mb-4">Indexed Knowledge Vault</h2>
+            <p class="text-slate-400">Cached document repositories and scraped vector nodes will display here.</p>
+        </div>
+    </div>
+
+    <div id="page-config" class="page-content hidden max-w-4xl mx-auto w-full p-8 my-auto">
+        <div class="bg-slate-900/80 border border-slate-800 p-8 rounded-2xl shadow-2xl">
+            <h2 class="text-2xl font-bold text-indigo-400 mb-4">Agent Node Configuration</h2>
+            <p class="text-slate-400">Active endpoint target: <code class="bg-slate-950 px-2 py-1 rounded text-indigo-300">http://127.0.0.1:8000/api/v1/research</code></p>
+        </div>
+    </div>
+
+    <footer class="text-center py-6 text-xs text-slate-500 border-t border-slate-900">
+        Projects Workspace &bull; Flagship Modules Suite &copy; 2026
+    </footer>
+
+    <script>
+        function switchTab(tabName) {
+            document.querySelectorAll('.page-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`page-${tabName}`).classList.remove('hidden');
+            
+            document.querySelectorAll('nav button').forEach(btn => {
+                btn.className = "text-slate-400 hover:text-slate-200 pb-1 transition";
+            });
+            document.getElementById(`nav-${tabName}`).className = "text-indigo-400 border-b-2 border-indigo-400 pb-1 transition";
+        }
+
+        async function startResearch() {
+            const topic = document.getElementById('topicInput').value;
+            const depth = parseInt(document.getElementById('depthSlider').value);
+            const btn = document.getElementById('researchBtn');
+            
+            if (!topic.trim()) {
+                alert('Please enter a research topic first.');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Agents Scanning Web...`;
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/v1/research', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ topic: topic, depth: depth })
+                });
+                
+                if (!response.ok) throw new Error('Research pipeline execution failed.');
+
+                const data = await response.json();
+                
+                document.getElementById('resSummary').innerText = data.summary;
+                document.getElementById('resStatus').innerText = data.status.toUpperCase();
+                
+                const sourcesList = document.getElementById('resSources');
+                sourcesList.innerHTML = '';
+                data.sources.forEach(src => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<a href="${src}" target="_blank" class="text-indigo-400 hover:text-indigo-300 underline font-mono text-xs">${src}</a>`;
+                    sourcesList.appendChild(li);
+                });
+                
+                document.getElementById('resultBox').style.display = 'block';
+            } catch (error) {
+                alert('Connection error: Ensure FastAPI backend is running on port 8000.');
+                console.error(error);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Dispatch Autonomous Agents';
+            }
+        }
+    </script>
+</body>
+</html>
