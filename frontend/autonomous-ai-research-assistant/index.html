@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Autonomous AI Research Assistant</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="logo">⚡ Autonomous AI Research Assistant</div>
+      <div class="badge">Live Microservice</div>
+    </div>
+  </header>
+
+  <main class="main-layout">
+    <!-- Left Column: Research Commissioning -->
+    <section class="panel-left">
+      <h2>Agentic Research Planner</h2>
+      <p class="subtitle">Multi-step autonomous agent loop with web synthesis, topic decomposition, and literature citations.</p>
+      
+      <div class="input-group">
+        <label for="topicInput">Investigation Thesis / Topic</label>
+        <input type="text" id="topicInput" value="High-Throughput Vector Databases in Multi-Tenant Clouds" class="text-input">
+      </div>
+
+      <div class="input-group">
+        <label for="depthSelect">Investigation Depth</label>
+        <select id="depthSelect" class="text-input">
+          <option value="Comprehensive" selected>Comprehensive (Deep Synthesis)</option>
+          <option value="Technical">Technical (Architecture & Benchmarks)</option>
+          <option value="Executive">Executive (High-Level Summary)</option>
+        </select>
+      </div>
+
+      <button class="btn primary-btn" onclick="runResearch()">Dispatch Autonomous Agent Loop</button>
+
+      <div class="log-card">
+        <h4>Agent Execution Log</h4>
+        <div id="logBox" class="terminal-log">Agent standing by for research query...</div>
+      </div>
+    </section>
+
+    <!-- Right Column: Synthesized Intelligence Dossier -->
+    <aside class="panel-right">
+      <h2>Synthesized Research Dossier</h2>
+
+      <div class="card">
+        <h3>📋 Executive Briefing</h3>
+        <p id="briefText" style="color: #cbd5e1; font-size: 0.9rem; line-height: 1.6; margin-top: 0.5rem;">
+          Initiate a research task to generate a technical synthesis.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>🔬 Detailed Findings & Citations</h3>
+        <div id="findingsContainer">
+          <p style="color: #94a3b8; font-size: 0.85rem;">Awaiting agent execution...</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>🎯 Strategic Recommendations</h3>
+        <ul id="recList">
+          <li>Awaiting agent execution...</li>
+        </ul>
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    async function runResearch() {
+      const topic = document.getElementById('topicInput').value.trim();
+      const depth = document.getElementById('depthSelect').value;
+      const log = document.getElementById('logBox');
+
+      if (!topic) {
+        alert("Please enter a research topic or technical thesis.");
+        return;
+      }
+
+      log.innerText = `[${new Date().toLocaleTimeString()}] Commissioning agentic task: "${topic}"\n[${new Date().toLocaleTimeString()}] Decomposing subqueries...\n[${new Date().toLocaleTimeString()}] Querying FastAPI backend (/api/v1/research/execute)...`;
+
+      const payload = {
+        topic: topic,
+        depth_level: depth,
+        focus_areas: ["Scalability", "Security", "Latency"]
+      };
+
+      try {
+        const res = await fetch("http://127.0.0.1:8000/api/v1/research/execute", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) throw new Error(`HTTP Error ${res.status}`);
+
+        const data = await res.json();
+
+        // Render Executive Summary
+        document.getElementById('briefText').innerText = data.executive_summary;
+
+        // Render Detailed Findings
+        if (data.detailed_findings && data.detailed_findings.length > 0) {
+          document.getElementById('findingsContainer').innerHTML = data.detailed_findings.map(item => `
+            <div style="margin-bottom: 1rem; border-left: 2px solid #38bdf8; padding-left: 0.75rem;">
+              <strong style="color: #38bdf8; font-size: 0.9rem;">📌 ${item.subtopic}</strong>
+              <p style="color: #cbd5e1; font-size: 0.85rem; margin: 0.3rem 0;">${item.summary}</p>
+              <ul style="margin-left: 1rem; color: #94a3b8; font-size: 0.8rem;">
+                ${item.key_takeaways.map(t => `<li>${t}</li>`).join('')}
+              </ul>
+              <small style="color: #64748b; font-size: 0.75rem; display: block; margin-top: 0.3rem;">Citations: ${item.citations.join(', ')}</small>
+            </div>
+          `).join('');
+        }
+
+        // Render Strategic Recommendations
+        if (data.strategic_recommendations && data.strategic_recommendations.length > 0) {
+          document.getElementById('recList').innerHTML = data.strategic_recommendations
+            .map(rec => `<li>${rec}</li>`).join('');
+        }
+
+        log.innerText += `\n[${new Date().toLocaleTimeString()}] 200 OK: Task ID ${data.task_id} generated successfully.`;
+      } catch (err) {
+        log.innerText += `\n[${new Date().toLocaleTimeString()}] Note: Backend server offline or CORS restricted. Running simulation fallback.\nDetails: ${err.message}`;
+
+        // Fallback preview
+        document.getElementById('briefText').innerText = `Executive Intelligence Dossier for '${topic}': Decoupling query orchestration from background indexing preserves sub-15ms p95 SLAs while preventing ingestion latency spikes.`;
+        document.getElementById('findingsContainer').innerHTML = `
+          <div style="margin-bottom: 1rem; border-left: 2px solid #38bdf8; padding-left: 0.75rem;">
+            <strong style="color: #38bdf8; font-size: 0.9rem;">📌 Scalability & Storage Footprint</strong>
+            <p style="color: #cbd5e1; font-size: 0.85rem; margin: 0.3rem 0;">Benchmarking confirms partitioned HNSW vector graphs preserve search precision while reducing index recreation overhead.</p>
+            <ul style="margin-left: 1rem; color: #94a3b8; font-size: 0.8rem;">
+              <li>Vector quantization (HNSW + PQ) cuts RAM by 4x.</li>
+              <li>Asynchronous indexing isolates query threads.</li>
+            </ul>
+            <small style="color: #64748b; font-size: 0.75rem; display: block; margin-top: 0.3rem;">Citations: IEEE Big Data (2025), ACM Distributed Computing</small>
+          </div>
+        `;
+        document.getElementById('recList').innerHTML = `
+          <li>Implement distributed vector caching to minimize primary database load under peak volumes.</li>
+          <li>Adopt continuous population drift monitoring (PSI metrics) to trigger automated pipeline runs.</li>
+        `;
+      }
+    }
+  </script>
+</body>
+</html>
