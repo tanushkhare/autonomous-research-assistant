@@ -7,7 +7,7 @@ router = APIRouter(prefix="/api/v1/research", tags=["Autonomous Research Agent"]
 @router.post("/query", response_model=ResearchReportResponse)
 async def conduct_research(payload: ResearchQueryRequest):
     try:
-        result = await research_agent.execute_research(payload.topic, payload.depth_level)
+        result = await research_agent.execute_research(payload.topic, payload.depth_level or "deep")
         return ResearchReportResponse(**result)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

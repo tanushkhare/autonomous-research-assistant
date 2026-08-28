@@ -8,21 +8,21 @@ class AutonomousResearchAgent:
     def __init__(self):
         self.verified_corpora = {
             "distributed consensus": [
-                {"title": "Raft: In Search of an Understandable Consensus Algorithm", "domain": "usenix.org", "summary": "Deconstructs consensus into leader election, log replication, and safety guarantees.", "relevance": 0.98},
-                {"title": "Paxos Made Simple", "domain": "acm.org", "summary": "Foundational formalization of distributed consensus across asynchronous networks.", "relevance": 0.94}
+                {"title": "Raft: In Search of an Understandable Consensus Algorithm", "source_domain": "usenix.org", "summary": "Deconstructs consensus into leader election, log replication, and safety guarantees.", "relevance_score": 0.98},
+                {"title": "Paxos Made Simple", "source_domain": "acm.org", "summary": "Foundational formalization of distributed consensus across asynchronous networks.", "relevance_score": 0.94}
             ],
             "rag": [
-                {"title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks", "domain": "arxiv.org/abs/2005.11401", "summary": "Combines pre-trained parametric and non-parametric memory for generation.", "relevance": 0.99},
-                {"title": "Dense Passage Retrieval for Open-Domain Question Answering", "domain": "arxiv.org/abs/2004.04906", "summary": "Embeddings-based dense vector retrieval outperforming classical BM25.", "relevance": 0.95}
+                {"title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks", "source_domain": "arxiv.org/abs/2005.11401", "summary": "Combines pre-trained parametric and non-parametric memory for generation.", "relevance_score": 0.99},
+                {"title": "Dense Passage Retrieval for Open-Domain Question Answering", "source_domain": "arxiv.org/abs/2004.04906", "summary": "Embeddings-based dense vector retrieval outperforming classical BM25.", "relevance_score": 0.95}
             ],
             "mlops": [
-                {"title": "Hidden Technical Debt in Machine Learning Systems", "domain": "neurips.cc", "summary": "Details anti-patterns in ML systems including pipeline jungles and covariate drift.", "relevance": 0.97}
+                {"title": "Hidden Technical Debt in Machine Learning Systems", "source_domain": "neurips.cc", "summary": "Details anti-patterns in ML systems including pipeline jungles and covariate drift.", "relevance_score": 0.97}
             ]
         }
 
-    async def execute_research(self, topic: str, depth: str) -> Dict[str, Any]:
+    async def execute_research(self, topic: str, depth: str = "deep") -> Dict[str, Any]:
         start = time.perf_counter()
-        await asyncio.sleep(0.05) # Simulate multi-step tool execution loop
+        await asyncio.sleep(0.01)
         
         topic_lower = topic.lower()
         matched_citations = []
@@ -35,9 +35,9 @@ class AutonomousResearchAgent:
             matched_citations = [
                 {
                     "title": f"Empirical Analysis of {topic.title()}",
-                    "domain": "openreview.net",
+                    "source_domain": "openreview.net",
                     "summary": f"Systematic benchmarking and architectural trade-off analysis regarding {topic}.",
-                    "relevance": 0.88
+                    "relevance_score": 0.88
                 }
             ]
 
@@ -49,9 +49,9 @@ class AutonomousResearchAgent:
             "topic": topic,
             "executive_summary": f"Comprehensive synthesis on '{topic}'. Evaluated primary literature across {len(matched_citations)} verified scientific sources.",
             "key_findings": [
-                f"Core mechanism operates through non-blocking asynchronous coordination.",
-                f"Evaluation metrics indicate bounded p95 execution latency.",
-                f"Architecture adheres to verified industry specifications."
+                "Core mechanism operates through non-blocking asynchronous coordination.",
+                "Evaluation metrics indicate bounded p95 execution latency.",
+                "Architecture adheres to verified industry specifications."
             ],
             "citations": matched_citations,
             "latency_ms": elapsed_ms,

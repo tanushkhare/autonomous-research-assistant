@@ -1,10 +1,9 @@
 ﻿from pydantic import BaseModel, Field
-from typing import List, Dict, Any, Optional
-from datetime import datetime
+from typing import List, Optional
 
 class ResearchQueryRequest(BaseModel):
     topic: str = Field(..., min_length=3, description="Research query or technical topic")
-    depth_level: str = Field(default="deep", description="Synthesis depth: 'fast' or 'deep'")
+    depth_level: Optional[str] = Field(default="deep", description="Synthesis depth")
 
 class AcademicCitation(BaseModel):
     title: str
