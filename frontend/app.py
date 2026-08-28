@@ -1,67 +1,59 @@
 ﻿import streamlit as st
 import requests
-import json
 
-st.set_page_config(page_title="Autonomous AI Research Assistant", layout="wide")
+st.set_page_config(page_title="Autonomous Research Assistant", layout="wide")
 
-st.title("🤖 Autonomous AI Research & Technical Intelligence Agent")
-st.markdown("Automated multi-step agentic decomposition, literature synthesis, and strategic briefing engine.")
+st.title("🔬 Autonomous Literature & Research Assistant")
+st.markdown("Agentic search execution, verified technical source citation, and automated executive summarization.")
 
 col1, col2 = st.columns([1, 1])
 
 with col1:
-    st.subheader("Research Commissioning")
-    topic_input = st.text_input("Investigation Thesis / Topic", value="High-Throughput Vector Databases in Multi-Tenant Clouds")
-    depth = st.selectbox("Investigation Depth", ["Technical", "Executive", "Comprehensive"])
-    
-    if st.button("Dispatch Autonomous Research Agent", type="primary"):
-        with st.spinner("Decomposing subqueries, harvesting citations, and synthesizing findings..."):
-            payload = {"topic": topic_input, "depth_level": depth, "focus_areas": ["Scalability", "Security"]}
+    st.subheader("Research Topic Ingest")
+    topic = st.text_input("Technical Topic / Question", value="Distributed Consensus Raft")
+    depth = st.selectbox("Synthesis Mode", ["deep", "fast"])
+
+    if st.button("Execute Autonomous Research Agent", type="primary"):
+        with st.spinner("Executing agentic search loop and verifying citations..."):
             try:
-                res = requests.post("http://localhost:8000/api/v1/research/execute", json=payload, timeout=10)
+                res = requests.post("http://localhost:8000/api/v1/research/query", json={"topic": topic, "depth_level": depth}, timeout=10)
                 if res.status_code == 200:
                     st.session_state["p02_result"] = res.json()
-                    st.success("Research Dossier Generated!")
+                    st.success("Research Report Synthesized!")
                 else:
-                    st.error(f"API Error: {res.text}")
+                    st.error(f"Agent Error: {res.text}")
             except Exception:
-                st.warning("Backend API offline. Executing client-side agent synthesis simulation.")
+                st.warning("Backend offline. Running simulated literature aggregation.")
                 st.session_state["p02_result"] = {
-                    "task_id": "sim_8401",
-                    "topic": topic_input,
-                    "executive_summary": f"Executive Synthesis for '{topic_input}': Production viability mandates decoupling indexing workers from API endpoints to guarantee sub-15ms p95 query SLAs.",
-                    "detailed_findings": [
-                        {
-                            "subtopic": "Architecture & Ingestion Scale",
-                            "summary": "Benchmarking confirms that partitioned HNSW vector graphs preserve search precision while halving index recreation overhead.",
-                            "key_takeaways": ["40% memory saving via product quantization.", "Decoupled background indexing prevents latency spikes."],
-                            "citations": ["IEEE Big Data (2025)", "ACM Distributed Computing"]
-                        }
+                    "research_id": "RES-SIM88",
+                    "topic": topic,
+                    "executive_summary": f"Synthesized analysis on '{topic}' citing canonical literature.",
+                    "key_findings": [
+                        "Deconstructs consensus into leader election, log replication, and safety.",
+                        "Sub-50ms heartbeat intervals maintain high availability."
                     ],
-                    "strategic_recommendations": [
-                        "Enforce connection pooling and read replicas for vector metadata storage.",
-                        "Isolate user tenant namespaces via cryptographically signed partition keys."
-                    ]
+                    "citations": [
+                        {"title": "Raft: In Search of an Understandable Consensus Algorithm", "domain": "usenix.org", "summary": "Foundational consensus protocol.", "relevance_score": 0.98}
+                    ],
+                    "latency_ms": 42.5,
+                    "timestamp": "2026-08-28T07:45:00Z"
                 }
 
 with col2:
     if "p02_result" in st.session_state:
         res = st.session_state["p02_result"]
-        st.subheader(f"Dossier: {res['topic']}")
+        st.subheader(f"Report: {res['research_id']}")
+        st.info(f"⏱️ Agent Latency: {res['latency_ms']} ms")
         
-        st.markdown("### 📋 Executive Summary")
-        st.info(res["executive_summary"])
+        st.markdown("#### Executive Summary")
+        st.write(res["executive_summary"])
         
-        st.markdown("### 🔬 Detailed Findings & Citations")
-        for finding in res["detailed_findings"]:
-            with st.expander(f"📌 {finding['subtopic']}", expanded=True):
-                st.write(finding["summary"])
-                st.markdown("**Key Takeaways:**")
-                for item in finding["key_takeaways"]:
-                    st.write(f"- {item}")
-                st.markdown("**Citations:**")
-                st.caption(", ".join(finding["citations"]))
-        
-        st.markdown("### 🎯 Strategic Recommendations")
-        for rec in res["strategic_recommendations"]:
-            st.success(f"💡 {rec}")
+        st.markdown("#### Key Technical Findings")
+        for finding in res["key_findings"]:
+            st.markdown(f"• {finding}")
+            
+        st.markdown("#### Ground-Truth Citations")
+        for cit in res["citations"]:
+            with st.expander(f"📚 {cit['title']} ({cit['source_domain']})"):
+                st.write(cit["summary"])
+                st.caption(f"Relevance Score: {cit['relevance_score']}")

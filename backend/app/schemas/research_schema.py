@@ -1,22 +1,22 @@
 ﻿from pydantic import BaseModel, Field
-from typing import List, Dict, Optional
+from typing import List, Dict, Any, Optional
 from datetime import datetime
 
-class ResearchTaskRequest(BaseModel):
-    topic: str = Field(..., min_length=5, description="Core topic or technical thesis to investigate")
-    depth_level: Optional[str] = Field(default="Comprehensive", description="Research depth (Executive, Technical, Comprehensive)")
-    focus_areas: Optional[List[str]] = Field(default_factory=list, description="Targeted focus areas or sub-domains")
+class ResearchQueryRequest(BaseModel):
+    topic: str = Field(..., min_length=3, description="Research query or technical topic")
+    depth_level: str = Field(default="deep", description="Synthesis depth: 'fast' or 'deep'")
 
-class ResearchFinding(BaseModel):
-    subtopic: str
+class AcademicCitation(BaseModel):
+    title: str
+    source_domain: str
     summary: str
-    key_takeaways: List[str]
-    citations: List[str]
+    relevance_score: float
 
-class ResearchBriefResponse(BaseModel):
-    task_id: str
+class ResearchReportResponse(BaseModel):
+    research_id: str
     topic: str
-    generated_at: datetime
     executive_summary: str
-    detailed_findings: List[ResearchFinding]
-    strategic_recommendations: List[str]
+    key_findings: List[str]
+    citations: List[AcademicCitation]
+    latency_ms: float
+    timestamp: str

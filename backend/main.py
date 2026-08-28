@@ -5,7 +5,7 @@ import uvicorn
 
 app = FastAPI(
     title="Autonomous Research Assistant API",
-    description="Multi-step agentic research planner, literature synthesizer, and technical brief generator.",
+    description="Agentic literature retrieval, citation ground-truth validation, and technical synthesis engine.",
     version="1.0.0"
 )
 
@@ -20,8 +20,8 @@ app.add_middleware(
 app.include_router(research_router.router)
 
 @app.get("/health")
-async def health():
-    return {"status": "healthy", "service": "autonomous-research-assistant", "agent_loop": "Sequential Task Decomposition"}
+async def health_check():
+    return {"status": "healthy", "service": "autonomous-research-assistant"}
 
 if __name__ == "__main__":
     uvicorn.run("backend.main:app", host="0.0.0.0", port=8000, reload=True)

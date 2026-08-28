@@ -9,11 +9,11 @@ def test_health():
     assert res.status_code == 200
     assert res.json()["status"] == "healthy"
 
-def test_research_cycle():
-    payload = {"topic": "Zero Trust Security Architectures", "depth_level": "Technical"}
-    res = client.post("/api/v1/research/execute", json=payload)
+def test_research_query():
+    payload = {"topic": "Distributed Consensus Raft", "depth_level": "deep"}
+    res = client.post("/api/v1/research/query", json=payload)
     assert res.status_code == 200
     data = res.json()
-    assert "task_id" in data
-    assert len(data["detailed_findings"]) > 0
-    assert len(data["strategic_recommendations"]) > 0
+    assert "RES-" in data["research_id"]
+    assert len(data["citations"]) > 0
+    assert data["citations"][0]["relevance_score"] > 0.8
